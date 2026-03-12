@@ -43,8 +43,8 @@ KERNEL_VERSION=$(basename $(ls Arkbuild/lib/modules))
 sudo cp $KERNEL_SRC/.config Arkbuild/boot/config-${KERNEL_VERSION}
 sudo cp $KERNEL_SRC/arch/arm64/boot/Image ${mountpoint}/
 if [ "$UNIT" == "503" ]; then
-  sudo cp $KERNEL_SRC/arch/arm64/boot/dts/rockchip/rk3566.dtb ${mountpoint}/${UNIT_DTB}.dtb
-  cp $KERNEL_SRC/arch/arm64/boot/dts/rockchip/rk3566.dtb $KERNEL_SRC/arch/arm64/boot/dts/rockchip/${UNIT_DTB}.dtb
+  sudo cp $KERNEL_SRC/arch/arm64/boot/dts/rockchip/${UNIT_DTB}.dtb ${mountpoint}/${UNIT_DTB}.dtb
+  cp $KERNEL_SRC/arch/arm64/boot/dts/rockchip/${UNIT_DTB}.dtb $KERNEL_SRC/arch/arm64/boot/dts/rockchip/${UNIT_DTB}.dtb
 else
   sudo cp $KERNEL_SRC/arch/arm64/boot/dts/rockchip/${UNIT_DTB}.dtb ${mountpoint}/
   if [[ "$UNIT" == *"353"* ]]; then
@@ -110,13 +110,17 @@ sudo rm -f ${mountpoint}/initrd.img
 
 # Build uboot and resource and install it to the image
 cd $KERNEL_SRC
-if [ "$UNIT" == "503" ] || [[ "$UNIT" == *"353"* ]]; then
+if [[ "$UNIT" == "503" ]] || [[ "$UNIT" == *"353"* ]]; then
   #cp arch/arm64/boot/dts/rockchip/${UNIT_DTB}.dtb .
   # Next line generates the resource.img file needed to flash to the image and to build the uboot
   git clone --depth=1 https://github.com/rockchip-linux/rkbin
   cd rkbin/tools
   #cp ../../arch/arm64/boot/dts/rockchip/${UNIT_DTB}.dtb .
-  cp ../../../misc/rk3566/device_off_charging_bmps/* .
+  if [[ "$UNIT" == "503" ]]; then
+    cp ../../../misc/rk3566/device_off_charging_bmps/rg503/* .
+  else
+    cp ../../../misc/rk3566/device_off_charging_bmps/rg353/* .
+  fi
   # Use Anbernic's resource.img files to provide onscreen battery charging state while off
   ./resource_tool --pack battery_* rk3566* rk-kernel.dtb
   cp resource.img ../../.

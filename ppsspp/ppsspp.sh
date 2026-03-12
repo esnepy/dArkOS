@@ -17,11 +17,12 @@ if  [[ $1 == "standalone" ]]; then
   echo "VAR=PPSSPPSDL" > /home/ark/.config/KILLIT
   sudo systemctl restart killer_daemon.service
   cp -f /$directory/psp/ppsspp/PSP/SYSTEM/ppsspp.ini.sdl /$directory/psp/ppsspp/PSP/SYSTEM/ppsspp.ini
-  xres="$(cat /sys/class/graphics/fb0/modes | grep -o -P '(?<=:).*(?=p-)' | cut -dx -f1)"
-  if [ $xres -ge "1280" ]; then
-    HDMI="/usr/lib/aarch64-linux-gnu/libSDL2-2.0.so.0.10.0"
-  fi
-  LD_PRELOAD="$HDMI" /opt/ppsspp/PPSSPPSDL --fullscreen "$2"
+  #xres="$(cat /sys/class/graphics/fb0/modes | grep -o -P '(?<=:).*(?=p-)' | cut -dx -f1)"
+  #if [ $xres -ge "1280" ]; then
+    #HDMI="/usr/lib/aarch64-linux-gnu/libSDL2-2.0.so.0.10.0"
+  #fi
+  #LD_PRELOAD="$HDMI" /opt/ppsspp/PPSSPPSDL --fullscreen "$2"
+  /opt/ppsspp/PPSSPPSDL --fullscreen "$2"
   cp -f /$directory/psp/ppsspp/PSP/SYSTEM/ppsspp.ini /$directory/psp/ppsspp/PSP/SYSTEM/ppsspp.ini.sdl
   sudo systemctl stop killer_daemon.service
 elif [[ $1 == "standalone-2021" ]]; then

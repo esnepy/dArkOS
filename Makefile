@@ -80,14 +80,6 @@ rg353v:
 	@sleep 5
 	./build_rg353v.sh
 
-rg353v-test:
-	$(info dArkOS will be built using the $(DEBIAN_CODE_NAME) release of Debian.)
-	$(info debian building caching enabled? ${ENABLE_CACHE})
-	$(info adding armhf 32bit userspace? ${BUILD_ARMHF})
-	$(info adding bluetooth support? ${BUILD_BLUEALSA})
-	@sleep 5
-	./build_rg353v-test.sh
-
 rg503:
 	$(info dArkOS will be built using the $(DEBIAN_CODE_NAME) release of Debian.)
 	$(info debian building caching enabled? ${ENABLE_CACHE})
