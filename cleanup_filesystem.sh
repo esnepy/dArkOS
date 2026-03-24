@@ -6,6 +6,9 @@ call_chroot "rm -rf /home/ark/EmulationStation-fcamod"
 call_chroot "rm -rf /home/ark/libgo2"
 call_chroot "rm -rf /home/ark/linux-rga"
 call_chroot "rm -rf /home/ark/${CHIPSET}_core_builds"
+if [[ "${CHIPSET}" == "rk3566" ]]; then
+  call_chroot "apt-mark hold ffmpeg"
+fi
 call_chroot "apt remove -y autotools-dev \
   build-essential \
   ccache \
