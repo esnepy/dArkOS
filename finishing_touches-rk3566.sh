@@ -47,7 +47,7 @@ sudo chroot Arkbuild/ bash -c "ln -sfv /home/ark/.asoundrc /etc/asound.conf"
 sudo chroot Arkbuild/ bash -c "cp -fv /usr/share/alsa/alsa.conf /usr/share/alsa/alsa.conf.mednafen"
 sudo chroot Arkbuild/ bash -c "sed -i '/\"\~\/.asoundrc\"/s//\"\~\/.asoundrc.mednafen\"/' /usr/share/alsa/alsa.conf.mednafen"
 
-# Sleep script and set default SuspendState to freeze
+# Sleep script and set default SuspendState to mem
 sudo mkdir -p Arkbuild/usr/lib/systemd/system-sleep
 sudo cp scripts/sleep.${CHIPSET} Arkbuild/usr/lib/systemd/system-sleep/sleep
 sudo chmod 777 Arkbuild/usr/lib/systemd/system-sleep/sleep
