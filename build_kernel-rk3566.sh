@@ -3,13 +3,7 @@
 # Build and install custom kernel from christianhaitian/linux
 KERNEL_SRC=main
 if [ ! -d "$KERNEL_SRC" ]; then
-  #if [ "$UNIT" == "503" ]; then
-    #git clone --recursive --depth=1 https://github.com/christianhaitian/rg503Kernel.git $KERNEL_SRC
-  #elif [[ "$UNIT" == *"353"* ]]; then
-    git clone --recursive --depth=1 https://github.com/christianhaitian/kernel_5_10_226.git $KERNEL_SRC
-  #else
-    #git clone --recursive --depth=1 https://github.com/christianhaitian/RG353VKernel.git -b rk2023 $KERNEL_SRC
-  #fi
+  git clone --recursive --depth=1 https://github.com/christianhaitian/kernel_5_10_226.git $KERNEL_SRC
 fi
 cd $KERNEL_SRC
 # Change the boot logo depending on the device
@@ -21,13 +15,8 @@ if [[ -e "../logos/unrotated/dArkos${UNIT}.png" ]]; then
   pngtopnm ../logos/unrotated/dArkos${UNIT}.png | ppmquant 224 | pnmnoraw > drivers/video/logo/logo_linux_clut224.ppm
 fi
 
-#if [ "$UNIT" != "503" ] && [[ "$UNIT" != *"353"* ]]; then
-  #make ARCH=arm64 rk3566_optimized_with_wifi_linux_defconfig
-  #CFLAGS=-Wno-deprecated-declarations make -j$(nproc) ARCH=arm64 KERNEL_DTS=rk3566 KERNEL_CONFIG=rk3566_optimized_with_wifi_linux_defconfig
-#else
-  make ARCH=arm64 rk3566_optimized_linux_defconfig
-  CFLAGS=-Wno-deprecated-declarations make -j$(nproc) ARCH=arm64 KERNEL_DTS=rk3566 KERNEL_CONFIG=rk3566_optimized_linux_defconfig
-#fi
+make ARCH=arm64 rk3566_optimized_linux_defconfig
+CFLAGS=-Wno-deprecated-declarations make -j$(nproc) ARCH=arm64 KERNEL_DTS=rk3566 KERNEL_CONFIG=rk3566_optimized_linux_defconfig
 verify_action
 cd ..
 
