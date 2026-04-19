@@ -13,6 +13,7 @@ if [[ -e "../logos/unrotated/dArkos${UNIT}.png" ]]; then
     sudo apt -y install netpbm
   fi	
   pngtopnm ../logos/unrotated/dArkos${UNIT}.png | ppmquant 224 | pnmnoraw > drivers/video/logo/logo_linux_clut224.ppm
+  pngtopnm ../logos/unrotated/dArkoshdmi.png | ppmquant 224 | pnmnoraw > drivers/video/logo/logo_hdmi_clut224.ppm
 fi
 
 make ARCH=arm64 rk3566_optimized_linux_defconfig
@@ -22,6 +23,7 @@ cd ..
 
 # Install kernel modules
 sudo make -C $KERNEL_SRC ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- INSTALL_MOD_PATH=../Arkbuild modules_install
+sudo cp -Rv $KERNEL_SRC/lib/firmware/ ../Arkbuild/usr/lib/
 
 mountpoint=mnt/boot
 mkdir -p ${mountpoint}
@@ -73,7 +75,7 @@ zstd -d -c initrd.img | cpio -idmv
 rm -f initrd.img
 sed -i '/local dev_id\=/c\\tlocal dev_id\=\"/dev/mmcblk1p4\"' scripts/local
 #Add regulatory.db and regulatory.db.p7s
-mkdir -p usr/lib/firmware
+mkdir -p lib/firmware
 wget https://github.com/CaffeeLake/wireless-regdb/raw/refs/heads/master/regulatory.db -O lib/firmware/regulatory.db -O lib/firmware/regulatory.db
 #wget -t 5 -T 60 https://git.kernel.org/pub/scm/linux/kernel/git/wens/wireless-regdb.git/plain/regulatory.db.p7s -O lib/firmware/regulatory.db.p7s
 # Fix: fsck hook fails to detect root fstype during chroot build because
@@ -81,7 +83,7 @@ wget https://github.com/CaffeeLake/wireless-regdb/raw/refs/heads/master/regulato
 # The initramfs scripts/functions still calls logsave unconditionally, and
 # the missing binary causes exit code 127 -> panic at boot.
 for bin in /sbin/fsck /sbin/logsave /sbin/e2fsck /sbin/fsck.ext4; do
-  src="../../Arkbuild${bin}"
+  src="../Arkbuild${bin}"
   if [ -f "$src" ]; then
     cp "$src" ".${bin}"
     # Copy required shared libraries
@@ -91,6 +93,8 @@ for bin in /sbin/fsck /sbin/logsave /sbin/e2fsck /sbin/fsck.ext4; do
     done
   fi
 done
+# We also need to copy the 5.10 kernel compatible BT firmware files or BT will not initialize correctly
+sudo cp ../Arkbuild/lib/firmware/rtl_bt/rtl8821cs_* lib/firmware/rtl_bt/
 find . | cpio -H newc -o | gzip -c > ../uInitrd
 sudo mv ../uInitrd ../${mountpoint}/uInitrd
 cd ..
